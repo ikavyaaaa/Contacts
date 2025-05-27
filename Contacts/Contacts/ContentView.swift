@@ -10,11 +10,25 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Contacts]
-    
+    @Query(sort: [SortDescriptor(\Contacts.firstName, order: .forward)])
+    private var items: [Contacts]
     @State private var showingAddContact = false
 
     var body: some View {
+        content
+            .modelContainer(for: Contacts.self)
+    }
+    
+    private func deleteItems(offsets: IndexSet) {
+        withAnimation {
+            for index in offsets {
+                let contact = items[index]
+                modelContext.delete(contact)
+            }
+        }
+    }
+    
+    private var content: some View {
         NavigationSplitView {
             List {
                 ForEach(items) { contact in
@@ -46,17 +60,5 @@ struct ContentView: View {
             AddContactView()
         }
     }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
-            }
-        }
-    }
 }
 
-#Preview {
-    ContentView()
-        .modelContainer(for: Contacts.self, inMemory: true)
-}

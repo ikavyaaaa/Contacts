@@ -18,6 +18,10 @@ struct AddContactView: View {
     @State private var phoneNumber = ""
 
     var body: some View {
+        content
+    }
+    
+    private var content: some View {
         NavigationStack {
             Form {
                 Section(header: Text("Name")) {
