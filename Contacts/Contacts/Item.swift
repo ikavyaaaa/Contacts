@@ -9,10 +9,15 @@ import Foundation
 import SwiftData
 
 @Model
-final class Item {
-    var timestamp: Date
+final class Contacts {
+    var firstName: String
+    var lastName: String
+    var phoneNumber: String
+
     
-    init(timestamp: Date) {
-        self.timestamp = timestamp
+    init(firstName: String, lastName: String, phoneNumber: String) {
+        self.firstName = firstName
+        self.lastName = lastName
+        self.phoneNumber = phoneNumber
     }
 }
