@@ -12,10 +12,10 @@ struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: [SortDescriptor(\Contacts.firstName, order: .forward)])
     private var items: [Contacts]
-
+    
     @State private var searchText = ""
     @State private var showingAddContact = false
-
+    
     private var filteredItems: [Contacts] {
         if searchText.isEmpty {
             return items
@@ -27,14 +27,14 @@ struct ContentView: View {
             }
         }
     }
-
+    
     var body: some View {
         NavigationSplitView {
             List {
                 Section {
                     StaticMyCardView()
                 }
-
+                
                 Section(header: Text("Contacts")) {
                     ForEach(filteredItems) { contact in
                         NavigationLink {
@@ -72,7 +72,7 @@ struct StaticMyCardView: View {
                 .resizable()
                 .frame(width: 50, height: 50)
                 .foregroundColor(.blue)
-
+            
             VStack(alignment: .leading) {
                 Text("Kavya Krishna")
                     .font(.headline)
@@ -87,7 +87,7 @@ struct StaticMyCardView: View {
 
 struct ContactRowView: View {
     let contact: Contacts
-
+    
     var body: some View {
         HStack {
             Circle()
@@ -102,7 +102,7 @@ struct ContactRowView: View {
             Text("\(contact.firstName) \(contact.lastName)")
         }
     }
-
+    
     private var initials: String {
         let f = contact.firstName.first.map { String($0) } ?? ""
         let l = contact.lastName.first.map { String($0) } ?? ""
@@ -112,7 +112,7 @@ struct ContactRowView: View {
 
 struct ContactDetailView: View {
     let contact: Contacts
-
+    
     var body: some View {
         Form {
             Section(header: Text("Name")) {
