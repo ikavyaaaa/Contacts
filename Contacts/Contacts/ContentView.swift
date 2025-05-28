@@ -19,32 +19,20 @@ struct ContentView: View {
             .modelContainer(for: Contacts.self)
     }
     
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                let contact = items[index]
-                modelContext.delete(contact)
-            }
-        }
-    }
-    
     private var content: some View {
         NavigationSplitView {
             List {
                 ForEach(items) { contact in
-                    NavigationLink {
-                        Text("Phone: \(contact.phoneNumber)")
-                    } label: {
-                        Text("\(contact.firstName) \(contact.lastName)")
-                    }
+                    Text("\(contact.firstName) \(contact.lastName)")
+//                    NavigationLink {
+//                        Text("Phone: \(contact.phoneNumber)")
+//                    } label: {
+//                        Text("\(contact.firstName) \(contact.lastName)")
+//                    }
                 }
-                .onDelete(perform: deleteItems)
             }
             .navigationTitle("Contacts")
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
                 ToolbarItem {
                     Button(action: {
                         showingAddContact = true
