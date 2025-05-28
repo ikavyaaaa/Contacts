@@ -12,10 +12,10 @@ struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: [SortDescriptor(\Contacts.firstName, order: .forward)])
     private var items: [Contacts]
-    
+
     @State private var searchText = ""
     @State private var showingAddContact = false
-    
+
     private var filteredItems: [Contacts] {
         if searchText.isEmpty {
             return items
@@ -31,10 +31,8 @@ struct ContentView: View {
     var body: some View {
         NavigationSplitView {
             List {
-                if let myCard = items.first {
-                    Section {
-                        ContactCardView(contact: myCard, isMyCard: true)
-                    }
+                Section {
+                    StaticMyCardView()
                 }
 
                 Section(header: Text("Contacts")) {
@@ -42,7 +40,7 @@ struct ContentView: View {
                         NavigationLink {
                             ContactDetailView(contact: contact)
                         } label: {
-                            ContactCardView(contact: contact)
+                            ContactRowView(contact: contact)
                         }
                     }
                 }
@@ -67,28 +65,42 @@ struct ContentView: View {
     }
 }
 
-struct ContactCardView: View {
+struct StaticMyCardView: View {
+    var body: some View {
+        HStack(spacing: 16) {
+            Image(systemName: "person.crop.circle.fill")
+                .resizable()
+                .frame(width: 50, height: 50)
+                .foregroundColor(.blue)
+
+            VStack(alignment: .leading) {
+                Text("Kavya Krishna")
+                    .font(.headline)
+                Text("My Card")
+                    .font(.caption)
+                    .foregroundColor(.gray)
+            }
+        }
+        .padding(.vertical, 4)
+    }
+}
+
+struct ContactRowView: View {
     let contact: Contacts
-    var isMyCard: Bool = false
 
     var body: some View {
         HStack {
             Circle()
-                .fill(Color.blue.opacity(0.2))
-                .frame(width: 44, height: 44)
-                .overlay(Text(initials).foregroundColor(.blue))
-
-            VStack(alignment: .leading) {
-                Text("\(contact.firstName) \(contact.lastName)")
-                    .fontWeight(isMyCard ? .bold : .regular)
-                if isMyCard {
-                    Text("My Card")
-                        .font(.caption)
-                        .foregroundColor(.gray)
-                }
-            }
+                .fill(Color.gray.opacity(0.3))
+                .frame(width: 36, height: 36)
+                .overlay(
+                    Text(initials)
+                        .foregroundColor(.black)
+                        .font(.subheadline)
+                )
+            
+            Text("\(contact.firstName) \(contact.lastName)")
         }
-        .padding(.vertical, 4)
     }
 
     private var initials: String {
