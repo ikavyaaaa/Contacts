@@ -16,7 +16,6 @@ struct ContentView: View {
 
     var body: some View {
         content
-            .modelContainer(for: Contacts.self)
     }
     
     private var content: some View {
