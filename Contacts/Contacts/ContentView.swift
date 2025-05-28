@@ -23,12 +23,11 @@ struct ContentView: View {
         NavigationSplitView {
             List {
                 ForEach(items) { contact in
-                    Text("\(contact.firstName) \(contact.lastName)")
-//                    NavigationLink {
-//                        Text("Phone: \(contact.phoneNumber)")
-//                    } label: {
-//                        Text("\(contact.firstName) \(contact.lastName)")
-//                    }
+                    NavigationLink {
+                        Text("Phone: \(contact.phoneNumber)")
+                    } label: {
+                        Text("\(contact.firstName) \(contact.lastName)")
+                    }
                 }
             }
             .navigationTitle("Contacts")
