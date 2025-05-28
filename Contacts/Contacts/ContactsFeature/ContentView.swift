@@ -29,6 +29,10 @@ struct ContentView: View {
     }
     
     var body: some View {
+        content
+    }
+    
+    private var content: some View {
         NavigationSplitView {
             List {
                 Section {
@@ -62,6 +66,7 @@ struct ContentView: View {
         .sheet(isPresented: $showingAddContact) {
             AddContactView()
         }
+        
     }
 }
 

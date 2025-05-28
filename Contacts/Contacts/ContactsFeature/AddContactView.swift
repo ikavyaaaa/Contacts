@@ -13,24 +13,18 @@ struct AddContactView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
 
-    @State private var firstName = ""
-    @State private var lastName = ""
-    @State private var phoneNumber = ""
+    @State private var newContact = Contacts(firstName: "", lastName: "", phoneNumber: "")
 
     var body: some View {
-        content
-    }
-    
-    private var content: some View {
         NavigationStack {
             Form {
                 Section(header: Text("Name")) {
-                    TextField("First Name", text: $firstName)
-                    TextField("Last Name", text: $lastName)
+                    TextField("First Name", text: $newContact.firstName)
+                    TextField("Last Name", text: $newContact.lastName)
                 }
 
                 Section(header: Text("Phone")) {
-                    TextField("Phone Number", text: $phoneNumber)
+                    TextField("Phone Number", text: $newContact.phoneNumber)
                         .keyboardType(.phonePad)
                 }
             }
@@ -43,13 +37,13 @@ struct AddContactView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
-                        let newContact = Contacts(firstName: firstName, lastName: lastName, phoneNumber: phoneNumber)
                         modelContext.insert(newContact)
                         dismiss()
                     }
-                    .disabled(firstName.isEmpty || lastName.isEmpty || phoneNumber.isEmpty)
+                    .disabled(newContact.firstName.isEmpty || newContact.lastName.isEmpty || newContact.phoneNumber.isEmpty)
                 }
             }
         }
     }
 }
+
