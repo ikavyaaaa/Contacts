@@ -1,7 +1,7 @@
 # Contacts
 
 
-## The code you've provided is a SwiftUI-based contacts app that uses the SOLID principles from object-oriented design very effectively. Here's a breakdown of how each SOLID principle applies:
+## The SwiftUI-based contacts app that uses the SOLID principles from object-oriented design very effectively. Here's a breakdown of how each SOLID principle applies:
 
 ✅ S — Single Responsibility Principle (SRP)
 Each class or struct should have one and only one reason to change.
