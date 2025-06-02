@@ -10,6 +10,7 @@ protocol ContactsRepository {
     func addContact(_ contact: Contacts)
 }
 
+import Foundation
 import SwiftData
 
 class SwiftDataContactsRepository: ContactsRepository {
@@ -20,7 +21,9 @@ class SwiftDataContactsRepository: ContactsRepository {
     }
 
     func fetchContacts() -> [Contacts] {
-        let descriptor = FetchDescriptor<Contacts>(sortBy: [SortDescriptor(\.firstName)])
+        let descriptor = FetchDescriptor<Contacts>(
+            sortBy: [SortDescriptor(\Contacts.firstName)]
+        )
         return (try? modelContext.fetch(descriptor)) ?? []
     }
 
