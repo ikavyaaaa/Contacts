@@ -10,37 +10,31 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query(sort: [SortDescriptor(\Contacts.firstName, order: .forward)])
-    private var items: [Contacts]
-    
-    @State private var searchText = ""
-    @State private var showingAddContact = false
-    
-    private var filteredItems: [Contacts] {
-        if searchText.isEmpty {
-            return items
-        } else {
-            return items.filter {
-                $0.firstName.localizedCaseInsensitiveContains(searchText) ||
-                $0.lastName.localizedCaseInsensitiveContains(searchText) ||
-                $0.phoneNumber.localizedCaseInsensitiveContains(searchText)
-            }
-        }
+    @StateObject private var viewModel: ContactsViewModel
+
+    init() {
+        _viewModel = StateObject(wrappedValue: ContactsViewModel(
+            repository: SwiftDataContactsRepository(modelContext: ModelContext(ModelContainer(for: Contacts.self)))
+        ))
     }
-    
+
     var body: some View {
         content
+            .environmentObject(viewModel)
+            .onAppear {
+                viewModel.loadContacts()
+            }
     }
-    
+
     private var content: some View {
         NavigationSplitView {
             List {
                 Section {
                     StaticMyCardView()
                 }
-                
+
                 Section(header: Text("Contacts")) {
-                    ForEach(filteredItems) { contact in
+                    ForEach(viewModel.filteredContacts()) { contact in
                         NavigationLink {
                             ContactDetailView(contact: contact)
                         } label: {
@@ -49,7 +43,7 @@ struct ContentView: View {
                     }
                 }
             }
-            .searchable(text: $searchText)
+            .searchable(text: $viewModel.searchText)
             .navigationTitle("Contacts")
             .toolbar {
                 ToolbarItem {
@@ -65,9 +59,11 @@ struct ContentView: View {
         }
         .sheet(isPresented: $showingAddContact) {
             AddContactView()
+                .environmentObject(viewModel)
         }
-        
     }
+
+    @State private var showingAddContact = false
 }
 
 struct StaticMyCardView: View {

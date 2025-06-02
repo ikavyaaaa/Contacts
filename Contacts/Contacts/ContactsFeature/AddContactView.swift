@@ -7,11 +7,10 @@
 
 
 import SwiftUI
-import SwiftData
 
 struct AddContactView: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var modelContext
+    @EnvironmentObject var viewModel: ContactsViewModel
 
     @State private var newContact = Contacts(firstName: "", lastName: "", phoneNumber: "")
 
@@ -37,7 +36,7 @@ struct AddContactView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
-                        modelContext.insert(newContact)
+                        viewModel.add(contact: newContact)
                         dismiss()
                     }
                     .disabled(newContact.firstName.isEmpty || newContact.lastName.isEmpty || newContact.phoneNumber.isEmpty)
@@ -46,4 +45,5 @@ struct AddContactView: View {
         }
     }
 }
+
 
