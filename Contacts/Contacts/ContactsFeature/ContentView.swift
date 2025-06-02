@@ -10,28 +10,27 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
-
-        @StateObject private var viewModel = ContactsViewModel(repository: ContactsRepository())
-        @State private var showingAddContact = false
-
-        var body: some View {
-            content
-                .onAppear {
-                    // Only swap the repo once
-                    if viewModel.repository is ContactsRepository {
-                        viewModel.repository = SwiftDataContactsRepository(modelContext: modelContext)
-                        viewModel.loadContacts()
-                    }
+    
+    @StateObject private var viewModel = ContactsViewModel(repository: DummyRepository())
+    @State private var showingAddContact = false
+    
+    var body: some View {
+        content
+            .onAppear {
+                if viewModel.repository is DummyRepository {
+                    viewModel.repository = SwiftDataContactsRepository(modelContext: modelContext)
+                    viewModel.loadContacts()
                 }
-        }
-
+            }
+    }
+    
     private var content: some View {
         NavigationSplitView {
             List {
                 Section {
                     StaticMyCardView()
                 }
-
+                
                 Section(header: Text("Contacts")) {
                     ForEach(viewModel.filteredContacts()) { contact in
                         NavigationLink {

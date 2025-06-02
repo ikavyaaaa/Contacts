@@ -12,11 +12,10 @@ class ContactsViewModel: ObservableObject {
     @Published var contacts: [Contacts] = []
     @Published var searchText: String = ""
 
-    private let repository: ContactsRepository
+    var repository: ContactsRepository 
 
     init(repository: ContactsRepository) {
         self.repository = repository
-        loadContacts()
     }
 
     func loadContacts() {

@@ -10,6 +10,11 @@ protocol ContactsRepository {
     func addContact(_ contact: Contacts)
 }
 
+struct DummyRepository: ContactsRepository {
+    func fetchContacts() -> [Contacts] { [] }
+    func addContact(_ contact: Contacts) {}
+}
+
 import Foundation
 import SwiftData
 
