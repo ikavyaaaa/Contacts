@@ -11,47 +11,60 @@ import Foundation
 @testable import Contacts
 
 struct ContactsTests {
-    @Test func testCreateContact() {
+
+    @Test
+    func testContactModelInitialization() {
         let contact = Contacts(firstName: "Alice", lastName: "Smith", phoneNumber: "1234567890")
         #expect(contact.firstName == "Alice")
         #expect(contact.lastName == "Smith")
         #expect(contact.phoneNumber == "1234567890")
     }
 
-    @MainActor @Test func testInsertContactIntoModelContext() throws {
+    @MainActor @Test
+    func testRepositoryInsertAndFetch() throws {
         let container = try ModelContainer(for: Contacts.self)
         let context = container.mainContext
+        let repository = SwiftDataContactsRepository(modelContext: context)
 
-        let newContact = Contacts(firstName: "Bob", lastName: "Jones", phoneNumber: "555-1234")
-        context.insert(newContact)
+        let contact = Contacts(firstName: "Bob", lastName: "Jones", phoneNumber: "555-1234")
+        repository.addContact(contact)
 
-        let contacts = try context.fetch(FetchDescriptor<Contacts>())
-        #expect(contacts.contains { $0.firstName == "Bob" && $0.lastName == "Jones" })
+        let fetched = repository.fetchContacts()
+        #expect(fetched.contains { $0.firstName == "Bob" && $0.lastName == "Jones" })
     }
 
-    @Test func testSaveButtonDisabledLogic() {
-        let viewModel = AddContactViewModel()
-        
-        #expect(viewModel.isSaveDisabled)
+    @Test
+    func testViewModelFilteringLogic() {
+        let contact1 = Contacts(firstName: "Alice", lastName: "Smith", phoneNumber: "1234")
+        let contact2 = Contacts(firstName: "Bob", lastName: "Jones", phoneNumber: "5678")
+        let repository = StaticRepository(contacts: [contact1, contact2])
+        let viewModel = ContactsViewModel(repository: repository)
 
-        viewModel.firstName = "Jane"
-        #expect(viewModel.isSaveDisabled)
+        viewModel.loadContacts()
 
-        viewModel.lastName = "Doe"
-        #expect(viewModel.isSaveDisabled)
+        viewModel.searchText = "alice"
+        let result1 = viewModel.filteredContacts()
+        #expect(result1.count == 1 && result1[0].firstName == "Alice")
 
-        viewModel.phoneNumber = "444-5555"
-        #expect(!viewModel.isSaveDisabled)
+        viewModel.searchText = "5678"
+        let result2 = viewModel.filteredContacts()
+        #expect(result2.count == 1 && result2[0].phoneNumber == "5678")
+
+        viewModel.searchText = "xyz"
+        let result3 = viewModel.filteredContacts()
+        #expect(result3.isEmpty)
     }
 }
 
-@Observable
-class AddContactViewModel {
-    var firstName = ""
-    var lastName = ""
-    var phoneNumber = ""
 
-    var isSaveDisabled: Bool {
-        firstName.isEmpty || lastName.isEmpty || phoneNumber.isEmpty
+struct StaticRepository: ContactsRepository {
+    let contacts: [Contacts]
+
+    func fetchContacts() -> [Contacts] {
+        contacts
+    }
+
+    func addContact(_ contact: Contacts) {
+        // No-op for test
     }
 }
