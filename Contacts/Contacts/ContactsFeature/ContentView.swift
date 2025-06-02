@@ -10,21 +10,20 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
-    @StateObject private var viewModel: ContactsViewModel
 
-    init() {
-        _viewModel = StateObject(wrappedValue: ContactsViewModel(
-            repository: SwiftDataContactsRepository(modelContext: ModelContext(ModelContainer(for: Contacts.self)))
-        ))
-    }
+        @StateObject private var viewModel = ContactsViewModel(repository: ContactsRepository())
+        @State private var showingAddContact = false
 
-    var body: some View {
-        content
-            .environmentObject(viewModel)
-            .onAppear {
-                viewModel.loadContacts()
-            }
-    }
+        var body: some View {
+            content
+                .onAppear {
+                    // Only swap the repo once
+                    if viewModel.repository is ContactsRepository {
+                        viewModel.repository = SwiftDataContactsRepository(modelContext: modelContext)
+                        viewModel.loadContacts()
+                    }
+                }
+        }
 
     private var content: some View {
         NavigationSplitView {
@@ -62,8 +61,6 @@ struct ContentView: View {
                 .environmentObject(viewModel)
         }
     }
-
-    @State private var showingAddContact = false
 }
 
 struct StaticMyCardView: View {
