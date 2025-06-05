@@ -16,10 +16,8 @@ struct ContentView: View {
     var body: some View {
         content
             .onAppear {
-                if viewModel.repository is DummyRepository {
-                    viewModel.repository = SwiftDataContactsRepository(modelContext: modelContext)
-                    viewModel.loadContacts()
-                }
+                viewModel.repository = SwiftDataContactsRepository(modelContext: modelContext)
+                viewModel.loadContacts()
             }
     }
     

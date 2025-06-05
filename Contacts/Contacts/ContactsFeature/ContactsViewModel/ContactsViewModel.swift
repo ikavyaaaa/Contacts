@@ -16,6 +16,8 @@ class ContactsViewModel: ObservableObject {
 
     init(repository: ContactsRepository) {
         self.repository = repository
+        
+        //self.repository = CombineContactsRepository(swiftDataRepository: <#T##SwiftDataContactsRepository#>, severContactsRepository: <#T##SeverContactsRepository#>)
     }
 
     func loadContacts() {
